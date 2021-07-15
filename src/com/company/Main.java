@@ -98,8 +98,15 @@ public class Main {
         System.out.println(createPeople().stream().max(comparing(Person::getAge)));
 
         String res = createPeople().stream()
-                .collect(collectingAndThen(minBy(comparing(Person::getAge)), p->p.map(Person::getName).orElse("")));
+                .collect(collectingAndThen(minBy(comparing(Person::getAge)), p->p.map(Person::getName).
+                        orElse(""))
+                );
         System.out.println(res);
+
+
+        System.out.println(createPeople().stream()
+            .collect(groupingBy(Person::getAge, mapping(Person::getName, filtering(name -> name.length()>3, toList()))))
+        );
     }
 
     public static List<Person> createPeople() {
