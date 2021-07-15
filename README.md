@@ -1,3 +1,3 @@
 # practiceStream
 
-tinkering around with java stream
+tinkering around with java stream, understanding imperative vs declarative programming... 
