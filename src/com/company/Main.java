@@ -2,6 +2,8 @@ package com.company;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static java.util.stream.Collectors.*;
 import static java.util.Comparator.*;
 
@@ -103,9 +105,51 @@ public class Main {
                 );
         System.out.println(res);
 
-
+        // mapping and filtering inside collect(...)
         System.out.println(createPeople().stream()
             .collect(groupingBy(Person::getAge, mapping(Person::getName, filtering(name -> name.length()>3, toList()))))
+        );
+
+        //teeing : combining two collectors together
+
+        // grouping mapping  :  (Func, Collector)
+        // collectingAndThen : (Collector, Func)
+        // teeing : (Col, Col, operation)
+
+        // flatMap good for one to many relation
+        // [[.....],[...],[..]]
+        // flatmap needs iterator not Collections
+        // therefore here we use Stream.of(..)
+        List<Integer> smallNumber = Arrays.asList(1,3,2);
+
+        System.out.println(smallNumber.stream()
+                .map(n -> List.of(n-1, n+1))
+                .collect(toList())
+        );
+
+        System.out.println(smallNumber.stream()
+                .flatMap(n -> List.of(n-1, n+1).stream())
+                .collect(toList())
+        );
+
+        List<Person> people = createPeople();
+
+        System.out.println(people.stream()
+                .map(Person::getName)
+                .flatMap(name -> Stream.of(name.split("")))
+                .collect(toList()));
+
+        System.out.println(
+                people.stream()
+                .collect(groupingBy(Person::getAge,
+                        flatMapping(p -> Stream.of(p.getName().split("")), toSet())))
+        );
+
+        System.out.println(
+                people.stream()
+                        .collect(groupingBy(Person::getAge,
+                                mapping(person->person.getName().toUpperCase(),
+                                flatMapping(name -> Stream.of(name.split("")), toSet()))))
         );
     }
 
